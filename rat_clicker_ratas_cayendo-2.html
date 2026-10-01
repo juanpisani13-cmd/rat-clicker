@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rat Clicker</title>
+<style>
+  *{box-sizing:border-box}
+  button{
+    -webkit-tap-highlight-color:transparent;
+    -webkit-touch-callout:none;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  button:focus, button:focus-visible{
+    outline:none;
+  }
+  body{
+    margin:0; min-height:100vh; overflow:hidden;
+    font-family:Arial,sans-serif; color:#fff;
+    background:
+      radial-gradient(circle at 20% 15%,rgba(110,80,45,.25),transparent 28%),
+      radial-gradient(circle at 80% 80%,rgba(70,55,35,.25),transparent 30%),
+      repeating-linear-gradient(0deg,#17120e 0 22px,#1d1712 22px 24px);
+  }
+  .wrap{max-width:700px;margin:auto;padding:24px 16px;text-align:center;position:relative;z-index:2}
+  h1{font-size:42px;margin:10px 0 4px}
+  #rats{font-size:30px;font-weight:bold;margin:8px}
+  .stats{font-size:15px;opacity:.85;margin-bottom:15px}
+  #ratBtn{
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+    width:220px;height:220px;border-radius:50%;border:5px solid #8b6845;
+    background:radial-gradient(circle at 35% 30%,#9d7650,#5b402a 65%,#352519);
+    box-shadow:0 12px 30px #0008,inset 0 0 25px #0008;
+    font-size:85px;cursor:pointer;user-select:none;
+    transition:transform .08s;
+  }
+  #ratBtn:active{transform:scale(.93)}
+  .upgrades{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+  .upgrades button,.smallBtn{
+    border:0;border-radius:12px;padding:12px;background:#3a2a1c;color:white;
+    cursor:pointer;font-weight:bold;box-shadow:0 4px 10px #0005;
+  }
+  .upgrades button:hover,.smallBtn:hover{background:#513a27}
+  .upgrades button:disabled{opacity:.45;cursor:not-allowed}
+  .cost{display:block;color:#e7c28a;margin-top:5px}
+  #soundBtn{margin-top:14px}
+  #rain{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+  .falling-rat{
+    position:absolute;top:-80px;font-size:34px;
+    animation:fall linear forwards;
+    filter:drop-shadow(0 3px 3px #0008);
+  }
+  @keyframes fall{
+    0%{transform:translateY(-70px) rotate(0deg) scale(.7);opacity:0}
+    10%{opacity:1}
+    100%{transform:translateY(115vh) rotate(720deg) scale(1);opacity:.95}
+  }
+  @media(max-width:600px){
+    h1{font-size:34px}.upgrades{grid-template-columns:1fr}
+    #ratBtn{width:190px;height:190px}
+  }
+</style>
+</head>
+<body>
+<div id="rain"></div>
+<div class="wrap">
+  <h1>🐀 RAT CLICKER</h1>
+  <div id="rats">0 ratas</div>
+  <div class="stats">Por click: <span id="perClick">1</span> · Por segundo: <span id="perSecond">0</span></div>
+
+  <button id="ratBtn" aria-label="Conseguir ratas">🐀</button>
+
+  <div class="upgrades">
+    <button id="powerBtn">➕ Más ratas<span class="cost">25 🐀</span></button>
+    <button id="autoBtn">⚙️ Rata automática<span class="cost">100 🐀</span></button>
+    <button id="megaBtn">💥 Mega rata<span class="cost">500 🐀</span></button>
+  </div>
+  <button class="smallBtn" id="soundBtn">🔊 Sonido: ON</button>
+  <br>
+  <button class="smallBtn" id="resetBtn">🔄 Reiniciar</button>
+</div>
+
+<script>
+let rats=0, perClick=1, perSecond=0, clicks=0;
+let powerCost=25, autoCost=100, megaCost=500;
+let soundOn=true;
+let audioCtx=null;
+
+const $=id=>document.getElementById(id);
+
+function initAudio(){
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended") audioCtx.resume();
+}
+function beep(freq=420,duration=.08,type="square",volume=.035){
+  if(!soundOn)return;
+  initAudio();
+  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+  o.type=type;o.frequency.value=freq;g.gain.value=volume;
+  o.connect(g);g.connect(audioCtx.destination);
+  const now=audioCtx.currentTime;
+  g.gain.setValueAtTime(volume,now);
+  g.gain.exponentialRampToValueAtTime(.001,now+duration);
+  o.start(now);o.stop(now+duration);
+}
+function saveGame(){
+  localStorage.setItem("ratClickerSave", JSON.stringify({
+    rats, perClick, perSecond, clicks,
+    powerCost, autoCost, megaCost,
+    savedAt: Date.now()
+  }));
+}
+
+function loadGame(){
+  const raw = localStorage.getItem("ratClickerSave");
+  if(!raw) return;
+  try{
+    const s = JSON.parse(raw);
+    rats = Number(s.rats) || 0;
+    perClick = Number(s.perClick) || 1;
+    perSecond = Number(s.perSecond) || 0;
+    clicks = Number(s.clicks) || 0;
+    powerCost = Number(s.powerCost) || 25;
+    autoCost = Number(s.autoCost) || 100;
+    megaCost = Number(s.megaCost) || 500;
+
+    const savedAt = Number(s.savedAt) || Date.now();
+    const elapsed = Math.max(0, (Date.now() - savedAt) / 1000);
+    if(perSecond > 0 && elapsed >= 1){
+      const earned = Math.floor(elapsed * perSecond);
+      rats += earned;
+      if(earned > 0){
+        setTimeout(() => {
+          alert("🐀 ¡Tus ratas trabajaron mientras estabas fuera!\\nGanaste " + earned.toLocaleString("es-AR") + " ratas.");
+        }, 150);
+      }
+    }
+  }catch(e){
+    localStorage.removeItem("ratClickerSave");
+  }
+}
+
+function update(){
+  $("rats").textContent=Math.floor(rats)+" ratas";
+  $("perClick").textContent=perClick;
+  $("perSecond").textContent=perSecond;
+  $("powerBtn").disabled=rats<powerCost;
+  $("autoBtn").disabled=rats<autoCost;
+  $("megaBtn").disabled=rats<megaCost;
+  $("powerBtn").querySelector(".cost").textContent=powerCost+" 🐀";
+  $("autoBtn").querySelector(".cost").textContent=autoCost+" 🐀";
+  $("megaBtn").querySelector(".cost").textContent=megaCost+" 🐀";
+}
+function rainRats(amount=7){
+  for(let i=0;i<amount;i++){
+    const r=document.createElement("div");
+    r.className="falling-rat";
+    r.textContent=["🐀","🐁"][Math.floor(Math.random()*2)];
+    r.style.left=(Math.random()*100)+"vw";
+    r.style.animationDuration=(.8+Math.random()*1.2)+"s";
+    r.style.animationDelay=(Math.random()*.15)+"s";
+    r.style.fontSize=(25+Math.random()*25)+"px";
+    $("rain").appendChild(r);
+    setTimeout(()=>r.remove(),2300);
+  }
+}
+function clickRat(){
+  initAudio();
+  rats+=perClick; clicks++;
+  rainRats(6+Math.min(8,Math.floor(perClick/3)));
+  beep(360+Math.min(400,perClick*25),.07,"square",.045);
+  setTimeout(()=>beep(520,.05,"triangle",.025),35);
+  update();
+  saveGame();
+}
+$("ratBtn").addEventListener("click",clickRat);
+
+$("powerBtn").addEventListener("click",()=>{
+  if(rats>=powerCost){rats-=powerCost;perClick++;powerCost=Math.ceil(powerCost*1.65);beep(700,.12,"triangle");update();saveGame();}
+});
+$("autoBtn").addEventListener("click",()=>{
+  if(rats>=autoCost){rats-=autoCost;perSecond++;autoCost=Math.ceil(autoCost*1.8);beep(760,.12,"triangle");update();saveGame();}
+});
+$("megaBtn").addEventListener("click",()=>{
+  if(rats>=megaCost){rats-=megaCost;perClick+=10;megaCost=Math.ceil(megaCost*2.2);rainRats(18);beep(180,.16,"sawtooth",.05);update();saveGame();}
+});
+$("soundBtn").addEventListener("click",()=>{
+  soundOn=!soundOn;
+  $("soundBtn").textContent=soundOn?"🔊 Sonido: ON":"🔇 Sonido: OFF";
+  if(soundOn) beep(600,.1,"triangle");
+});
+$("resetBtn").addEventListener("click",()=>{
+  if(confirm("¿Reiniciar todo?")){
+    rats=0;perClick=1;perSecond=0;clicks=0;powerCost=25;autoCost=100;megaCost=500;
+    beep(220,.15,"sawtooth");update();saveGame();
+  }
+});
+setInterval(()=>{
+  if(perSecond>0){
+    rats+=perSecond;
+    update();
+  }
+  saveGame();
+},1000);
+
+window.addEventListener("beforeunload", saveGame);
+document.addEventListener("visibilitychange", ()=>{
+  if(document.visibilityState === "hidden") saveGame();
+});
+
+loadGame();
+update();
+</script>
+</body>
+</html>
