@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Rat Clicker</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-html,body{
-  -webkit-tap-highlight-color:transparent;
-}
-
+<title>Rat Clicker</title><style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
   margin:0;
   font-family:Arial,sans-serif;
@@ -24,7 +13,6 @@ body{
   -webkit-user-select:none;
   touch-action:manipulation;
 }
-
 button{
   border:0;
   border-radius:12px;
@@ -33,26 +21,10 @@ button{
   color:white;
   background:#7047c8;
   cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
   touch-action:manipulation;
-  outline:none;
 }
-
-button:focus,
-button:active{
-  outline:none;
-}
-
-button:active{
-  transform:scale(.95);
-}
-
-.app{
-  max-width:900px;
-  margin:auto;
-  padding:12px;
-}
-
+button:active{transform:scale(.95)}
+.app{max-width:900px;margin:auto;padding:12px}
 header{
   background:#241d30;
   border-radius:18px;
@@ -61,49 +33,36 @@ header{
   top:0;
   z-index:10;
 }
-
 .title{
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
-
-h1{
-  margin:0;
-  font-size:25px;
-}
-
+h1{margin:0;font-size:25px}
 .stats{
   display:flex;
   gap:7px;
   flex-wrap:wrap;
   margin-top:12px;
 }
-
 .stat{
   background:#382c47;
   padding:8px 11px;
   border-radius:10px;
   font-weight:bold;
 }
-
 .tabs{
   display:flex;
   gap:7px;
   overflow-x:auto;
   margin:12px 0;
 }
-
-.tabs button{
-  white-space:nowrap;
-}
-
+.tabs button{white-space:nowrap}
 .panel{
   background:#241d30;
   border-radius:18px;
   padding:15px;
 }
-
 .map{
   min-height:330px;
   border-radius:17px;
@@ -112,18 +71,15 @@ h1{
   overflow:hidden;
   position:relative;
 }
-
 .home{background:linear-gradient(#987153,#45312b)}
 .sewer{background:linear-gradient(#315c61,#142b30)}
 .city{background:linear-gradient(#59657e,#292f40)}
 .factory{background:linear-gradient(#79633e,#302719)}
 .palace{background:linear-gradient(#744d8a,#28162f)}
-
 .map h2{
   margin:5px;
   text-shadow:2px 2px 4px #000;
 }
-
 #rat{
   font-size:125px;
   margin:35px auto 10px;
@@ -131,56 +87,31 @@ h1{
   cursor:pointer;
   filter:drop-shadow(0 10px 8px #0008);
   transition:.1s;
-  -webkit-tap-highlight-color:transparent;
-  touch-action:manipulation;
 }
-
-#rat:hover{
-  transform:scale(1.05);
-}
-
 #rat:active{
   transform:scale(.85) rotate(-5deg);
 }
-
-.coin{
-  font-size:20px;
-  font-weight:bold;
-}
-
+.coin{font-size:20px;font-weight:bold}
 .mainbtn{
   margin-top:10px;
   background:#d38b32;
   font-size:21px;
   padding:15px 28px;
 }
-
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
   gap:10px;
   margin-top:12px;
 }
-
 .card{
   background:#382c47;
   padding:14px;
   border-radius:14px;
 }
-
-.card h3{
-  margin:0 0 7px;
-}
-
-.small{
-  opacity:.7;
-  font-size:13px;
-}
-
-.locked{
-  opacity:.5;
-}
-
+.card h3{margin:0 0 7px}
+.small{opacity:.7;font-size:13px}
+.locked{opacity:.5}
 .boss{
   display:none;
   margin-top:12px;
@@ -189,14 +120,10 @@ h1{
   text-align:center;
   background:linear-gradient(135deg,#8b5908,#dcae2d);
 }
-
 #bossRat{
   font-size:90px;
   cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
-  touch-action:manipulation;
 }
-
 .bossbar{
   height:18px;
   background:#42290d;
@@ -204,13 +131,11 @@ h1{
   overflow:hidden;
   margin-top:10px;
 }
-
 .bossfill{
   height:100%;
   width:100%;
   background:#ff4444;
 }
-
 #toast{
   display:none;
   position:fixed;
@@ -223,182 +148,824 @@ h1{
   z-index:100;
   text-align:center;
 }
-
 .reward{
   color:#ffd85c;
   font-weight:bold;
 }
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-<header>
-
+</style></head><body><div class="app"><header>
 <div class="title">
 <h1>🐀 Rat Clicker</h1>
 <button onclick="resetGame()">Reiniciar</button>
-</div>
-
-<div class="stats">
+</div><div class="stats">
 <div class="stat">🪙 <span id="coins">0</span></div>
 <div class="stat">💎 <span id="gems">0</span></div>
 <div class="stat">⚡ <span id="cps">0</span>/s</div>
 <div class="stat">🗺️ <span id="mapName">Casa</span></div>
 </div>
-
-</header>
-
-<div class="tabs">
+</header><div class="tabs">
 <button onclick="showTab('play')">🐀 Jugar</button>
 <button onclick="showTab('upgrades')">⬆️ Mejoras</button>
 <button onclick="showTab('maps')">🗺️ Mapas</button>
 <button onclick="showTab('missions')">🎯 Misiones</button>
 <button onclick="showTab('achievements')">🏆 Logros</button>
-</div>
-
-<section id="play" class="panel">
-
-<div id="mapArea" class="map home">
-
-<div class="small">Mapa actual</div>
-
-<h2 id="mapTitle">🏠 Casa</h2>
-
-<div id="rat" onclick="clickRat()">🐀</div>
-
-<div class="coin">
+</div><section id="play" class="panel"><div id="mapArea" class="map home"><div class="small">Mapa actual</div><h2 id="mapTitle">🏠 Casa</h2><div id="rat" onclick="clickRat()">🐀</div><div class="coin">
 +<span id="clickValue">1</span> 🪙 por clic
-</div>
+</div><button class="mainbtn" onclick="clickRat()">¡CLIC!</button>
 
-<button class="mainbtn" onclick="clickRat()">
-¡CLIC!
-</button>
-
-</div>
-
-<div id="boss" class="boss">
-
-<h2>👑 ¡RATA DORADA!</h2>
-
-<div id="bossRat" onclick="hitBoss()">🐀</div>
-
-<p>
+</div><div id="boss" class="boss"><h2>👑 ¡RATA DORADA!</h2><div id="bossRat" onclick="hitBoss()">🐀</div><p>
 Clics:
 <span id="bossHits">0</span>/100
-</p>
-
-<p>
+</p><p>
 ⏱️ Tiempo:
 <span id="bossTime">10</span>s
-</p>
-
-<div class="bossbar">
+</p><div class="bossbar">
 <div id="bossFill" class="bossfill"></div>
-</div>
-
-<p class="reward">
+</div><p class="reward">
 ¡Derrótala para conseguir monedas y diamantes!
-</p>
-
-</div>
-
-</section>
-
-<section id="upgrades" class="panel" style="display:none">
-
-<h2>⬆️ Mejoras</h2>
-
-<div class="grid">
-
-<div class="card">
+</p></div>
+</section><section id="upgrades" class="panel" style="display:none"><h2>⬆️ Mejoras</h2><div class="grid"><div class="card">
 <h3>🖱️ Patita fuerte</h3>
 <p>+1 moneda por clic.</p>
 <button onclick="buy('click')">
 Comprar — <span id="clickCost">25</span> 🪙
 </button>
-</div>
-
-<div class="card">
+</div><div class="card">
 <h3>🤖 Rata ayudante</h3>
 <p>Genera monedas automáticamente.</p>
 <button onclick="buy('auto')">
 Comprar — <span id="autoCost">75</span> 🪙
 </button>
-</div>
-
-<div class="card">
+</div><div class="card">
 <h3>🍕 Comida premium</h3>
 <p>Duplica las monedas por clic.</p>
 <button onclick="buy('mult')">
 Comprar — <span id="multCost">500</span> 🪙
 </button>
-</div>
-
-<div class="card">
+</div><div class="card">
 <h3>💎 Bolsa brillante</h3>
 <p>Aumenta la posibilidad de encontrar diamantes.</p>
 <button onclick="buy('gem')">
 Comprar — <span id="gemCost">250</span> 🪙
 </button>
-</div>
-
-</div>
-</section>
-
-<section id="maps" class="panel" style="display:none">
+</div></div>
+</section><section id="maps" class="panel" style="display:none">
 <h2>🗺️ Mapas</h2>
 <p class="small">Cada mapa aumenta las monedas obtenidas.</p>
 <div id="mapsGrid" class="grid"></div>
-</section>
-
-<section id="missions" class="panel" style="display:none">
+</section><section id="missions" class="panel" style="display:none">
 <h2>🎯 Misiones</h2>
 <div id="missionsGrid" class="grid"></div>
-</section>
-
-<section id="achievements" class="panel" style="display:none">
+</section><section id="achievements" class="panel" style="display:none">
 <h2>🏆 Logros</h2>
 <div id="achievementsGrid" class="grid"></div>
-</section>
+</section></div><div id="toast"></div><script>
 
-</div>
-
-<div id="toast"></div>
-
-<script>
-
-/* =========================
-   SONIDO
-========================= */
-
-let audioContext=null;
+let audioContext = null;
 
 function initAudio(){
-
   if(!audioContext){
-
-    const AudioContext =
-      window.AudioContext ||
-      window.webkitAudioContext;
-
-    if(AudioContext){
-      audioContext=new AudioContext();
-    }
-
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(AC) audioContext = new AC();
   }
 
-  if(audioContext &&
-     audioContext.state==="suspended"){
-
+  if(audioContext && audioContext.state === "suspended"){
     audioContext.resume();
-
   }
+}
 
+function sound(frequency=500,duration=0.06,type="square"){
+  try{
+    initAudio();
+    if(!audioContext)return;
+
+    const osc=audioContext.createOscillator();
+    const gain=audioContext.createGain();
+
+    osc.type=type;
+    osc.frequency.value=frequency;
+
+    gain.gain.setValueAtTime(0.08,audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioContext.currentTime+duration
+    );
+
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+
+    osc.start();
+    osc.stop(audioContext.currentTime+duration);
+  }catch(e){}
 }
 
 function playClickSound(){
+  sound(520,0.05,"square");
+}
+
+function playBuySound(){
+  sound(750,0.08,"sine");
+  setTimeout(()=>sound(950,0.08,"sine"),80);
+}
+
+function playBossSound(){
+  sound(250,0.1,"sawtooth");
+}
+
+function playWinSound(){
+  sound(600,0.12,"sine");
+  setTimeout(()=>sound(800,0.12,"sine"),130);
+  setTimeout(()=>sound(1100,0.2,"sine"),260);
+}
+
+
+/* =========================
+   DATOS DEL JUEGO
+========================= */
+
+let game={
+  coins:0,
+  gems:0,
+  clicks:0,
+  clickPower:1,
+  auto:0,
+  multiplier:1,
+  gemLuck:0,
+  clickLevel:0,
+  autoLevel:0,
+  multLevel:0,
+  gemLevel:0,
+  map:0,
+  lastSave:Date.now(),
+  bossDefeated:0
+};
+
+const maps=[
+  {
+    name:"Casa",
+    emoji:"🏠",
+    multiplier:1,
+    cost:0,
+    class:"home"
+  },
+  {
+    name:"Alcantarilla",
+    emoji:"🚇",
+    multiplier:2,
+    cost:1000,
+    class:"sewer"
+  },
+  {
+    name:"Ciudad",
+    emoji:"🏙️",
+    multiplier:4,
+    cost:5000,
+    class:"city"
+  },
+  {
+    name:"Fábrica",
+    emoji:"🏭",
+    multiplier:8,
+    cost:25000,
+    class:"factory"
+  },
+  {
+    name:"Palacio",
+    emoji:"🏰",
+    multiplier:15,
+    cost:100000,
+    class:"palace"
+  }
+];
+
+
+/* =========================
+   GUARDAR / CARGAR
+========================= */
+
+function saveGame(){
+  game.lastSave=Date.now();
+  localStorage.setItem("ratClickerSave",JSON.stringify(game));
+}
+
+function loadGame(){
+
+  const saved=localStorage.getItem("ratClickerSave");
+
+  if(saved){
+    try{
+      const data=JSON.parse(saved);
+      game=Object.assign(game,data);
+    }catch(e){}
+  }
+
+  const now=Date.now();
+  const secondsAway=Math.min(
+    86400,
+    Math.max(0,(now-game.lastSave)/1000)
+  );
+
+  if(game.auto>0 && secondsAway>5){
+
+    const offlineCoins=
+      Math.floor(game.auto*secondsAway);
+
+    if(offlineCoins>0){
+
+      game.coins+=offlineCoins;
+
+      setTimeout(()=>{
+        toast(
+          "Mientras estabas fuera ganaste "+
+          offlineCoins.toLocaleString()+
+          " 🪙"
+        );
+      },500);
+
+    }
+  }
+
+  game.lastSave=now;
+}
+
+
+/* =========================
+   INTERFAZ
+========================= */
+
+function updateUI(){
+
+  document.getElementById("coins").textContent=
+    Math.floor(game.coins).toLocaleString();
+
+  document.getElementById("gems").textContent=
+    Math.floor(game.gems).toLocaleString();
+
+  document.getElementById("cps").textContent=
+    game.auto.toLocaleString();
+
+  document.getElementById("clickValue").textContent=
+    getClickValue().toLocaleString();
+
+  document.getElementById("clickCost").textContent=
+    getClickCost().toLocaleString();
+
+  document.getElementById("autoCost").textContent=
+    getAutoCost().toLocaleString();
+
+  document.getElementById("multCost").textContent=
+    getMultCost().toLocaleString();
+
+  document.getElementById("gemCost").textContent=
+    getGemCost().toLocaleString();
+
+  document.getElementById("mapName").textContent=
+    maps[game.map].name;
+
+  document.getElementById("mapTitle").textContent=
+    maps[game.map].emoji+" "+maps[game.map].name;
+
+  const area=document.getElementById("mapArea");
+
+  area.className="map "+maps[game.map].class;
+
+  renderMaps();
+  renderMissions();
+  renderAchievements();
+}
+
+function getClickValue(){
+  return Math.floor(
+    game.clickPower*
+    game.multiplier*
+    maps[game.map].multiplier
+  );
+}
+
+function getClickCost(){
+  return Math.floor(
+    25*Math.pow(1.6,game.clickLevel)
+  );
+}
+
+function getAutoCost(){
+  return Math.floor(
+    75*Math.pow(1.7,game.autoLevel)
+  );
+}
+
+function getMultCost(){
+  return Math.floor(
+    500*Math.pow(2,game.multLevel)
+  );
+}
+
+function getGemCost(){
+  return Math.floor(
+    250*Math.pow(1.8,game.gemLevel)
+  );
+}
+
+
+/* =========================
+   CLIC
+========================= */
+
+function clickRat(){
 
   initAudio();
+  playClickSound();
+
+  const amount=getClickValue();
+
+  game.coins+=amount;
+  game.clicks++;
+
+  if(Math.random()<0.01+game.gemLuck*0.01){
+    game.gems++;
+    toast("💎 ¡Encontraste un diamante!");
+  }
+
+  updateUI();
+  saveGame();
+}
+
+
+/* =========================
+   MEJORAS
+========================= */
+
+function buy(type){
+
+  initAudio();
+
+  let cost=0;
+
+  if(type==="click"){
+
+    cost=getClickCost();
+
+    if(game.coins<cost){
+      toast("❌ No tienes suficientes monedas");
+      return;
+    }
+
+    game.coins-=cost;
+    game.clickPower++;
+    game.clickLevel++;
+
+    toast("🖱️ ¡Patita fuerte mejorada!");
+
+  }
+
+  if(type==="auto"){
+
+    cost=getAutoCost();
+
+    if(game.coins<cost){
+      toast("❌ No tienes suficientes monedas");
+      return;
+    }
+
+    game.coins-=cost;
+    game.auto++;
+    game.autoLevel++;
+
+    toast("🤖 ¡Rata ayudante comprada!");
+
+  }
+
+  if(type==="mult"){
+
+    cost=getMultCost();
+
+    if(game.coins<cost){
+      toast("❌ No tienes suficientes monedas");
+      return;
+    }
+
+    game.coins-=cost;
+    game.multiplier*=2;
+    game.multLevel++;
+
+    toast("🍕 ¡Tus clics se duplicaron!");
+
+  }
+
+  if(type==="gem"){
+
+    cost=getGemCost();
+
+    if(game.coins<cost){
+      toast("❌ No tienes suficientes monedas");
+      return;
+    }
+
+    game.coins-=cost;
+    game.gemLuck++;
+    game.gemLevel++;
+
+    toast("💎 ¡Más posibilidades de diamantes!");
+
+  }
+
+  playBuySound();
+  updateUI();
+  saveGame();
+}
+
+
+/* =========================
+   MAPAS
+========================= */
+
+function renderMaps(){
+
+  const grid=document.getElementById("mapsGrid");
+
+  grid.innerHTML="";
+
+  maps.forEach((map,index)=>{
+
+    const card=document.createElement("div");
+    card.className="card";
+
+    const unlocked=game.map>=index;
+
+    if(unlocked){
+
+      card.innerHTML=`
+        <h3>${map.emoji} ${map.name}</h3>
+        <p>Multiplicador: x${map.multiplier}</p>
+        <button onclick="changeMap(${index})">
+          ${game.map===index?"✅ Actual":"Viajar"}
+        </button>
+      `;
+
+    }else{
+
+      card.innerHTML=`
+        <h3 class="locked">${map.emoji} ${map.name}</h3>
+        <p>🔒 Cuesta ${map.cost.toLocaleString()} 🪙</p>
+        <button onclick="unlockMap(${index})">
+          Desbloquear
+        </button>
+      `;
+
+    }
+
+    grid.appendChild(card);
+  });
+}
+
+function unlockMap(index){
+
+  const map=maps[index];
+
+  if(game.coins<map.cost){
+    toast("❌ Necesitas "+map.cost.toLocaleString()+" 🪙");
+    return;
+  }
+
+  game.coins-=map.cost;
+  game.map=index;
+
+  toast("🗺️ ¡Nuevo mapa desbloqueado!");
+
+  playWinSound();
+  updateUI();
+  saveGame();
+}
+
+function changeMap(index){
+
+  if(game.map<index)return;
+
+  game.map=index;
+
+  toast("🗺️ Viajaste a "+maps[index].name);
+
+  updateUI();
+  saveGame();
+}
+
+
+/* =========================
+   JEFE
+========================= */
+
+let bossActive=false;
+let bossHits=0;
+let bossTime=10;
+let bossTimer=null;
+
+function spawnBoss(){
+
+  if(bossActive)return;
+
+  bossActive=true;
+  bossHits=0;
+  bossTime=10;
+
+  document.getElementById("boss").style.display="block";
+  document.getElementById("bossHits").textContent="0";
+  document.getElementById("bossTime").textContent="10";
+  document.getElementById("bossFill").style.width="100%";
+
+  toast("👑 ¡APARECIÓ LA RATA DORADA!");
+
+  playBossSound();
+
+  clearInterval(bossTimer);
+
+  bossTimer=setInterval(()=>{
+
+    bossTime--;
+
+    document.getElementById("bossTime").textContent=
+      bossTime;
+
+    if(bossTime<=0){
+      endBoss(false);
+    }
+
+  },1000);
+}
+
+function hitBoss(){
+
+  if(!bossActive)return;
+
+  initAudio();
+  sound(300+bossHits*4,0.035,"square");
+
+  bossHits++;
+
+  document.getElementById("bossHits").textContent=
+    bossHits;
+
+  document.getElementById("bossFill").style.width=
+    (100-bossHits)+"%";
+
+  if(bossHits>=100){
+    endBoss(true);
+  }
+}
+
+function endBoss(win){
+
+  clearInterval(bossTimer);
+
+  bossActive=false;
+
+  if(win){
+
+    const rewardCoins=
+      1000*
+      maps[game.map].multiplier;
+
+    game.coins+=rewardCoins;
+    game.gems+=10;
+    game.bossDefeated++;
+
+    toast(
+      "👑 ¡JEFE DERROTADO! +"+
+      rewardCoins.toLocaleString()+
+      " 🪙 +10 💎"
+    );
+
+    playWinSound();
+
+  }else{
+
+    toast("💨 ¡La rata dorada escapó!");
+
+  }
+
+  document.getElementById("boss").style.display="none";
+
+  updateUI();
+  saveGame();
+}
+
+
+/* =========================
+   MISIONES
+========================= */
+
+function renderMissions(){
+
+  const grid=document.getElementById("missionsGrid");
+
+  if(!grid)return;
+
+  const missions=[
+    {
+      name:"🐀 Primeros pasos",
+      desc:"Haz 100 clics",
+      progress:game.clicks,
+      target:100,
+      reward:100
+    },
+    {
+      name:"🪙 Coleccionista",
+      desc:"Consigue 1.000 monedas",
+      progress:game.coins,
+      target:1000,
+      reward:250
+    },
+    {
+      name:"👑 Cazador de jefes",
+      desc:"Derrota 1 jefe",
+      progress:game.bossDefeated,
+      target:1,
+      reward:10
+    }
+  ];
+
+  grid.innerHTML="";
+
+  missions.forEach((m,index)=>{
+
+    const done=m.progress>=m.target;
+
+    grid.innerHTML+=`
+      <div class="card">
+        <h3>${m.name}</h3>
+        <p>${m.desc}</p>
+        <p>${Math.min(m.progress,m.target).toLocaleString()}
+        / ${m.target.toLocaleString()}</p>
+        <p class="reward">
+        ${done?"✅ Completada":"🎁 Recompensa: "+m.reward}
+        </p>
+      </div>
+    `;
+
+  });
+}
+
+
+/* =========================
+   LOGROS
+========================= */
+
+function renderAchievements(){
+
+  const grid=document.getElementById("achievementsGrid");
+
+  if(!grid)return;
+
+  const achievements=[
+    ["🐀 Ratón principiante",game.clicks>=100],
+    ["🪙 Rico",game.coins>=10000],
+    ["💎 Diamante",game.gems>=25],
+    ["👑 Cazador dorado",game.bossDefeated>=1],
+    ["🏰 Explorador",game.map>=4]
+  ];
+
+  grid.innerHTML="";
+
+  achievements.forEach(a=>{
+
+    grid.innerHTML+=`
+      <div class="card ${a[1]?"":"locked"}">
+        <h3>${a[1]?"🏆":"🔒"} ${a[0]}</h3>
+        <p>${a[1]?"¡Desbloqueado!":"Aún bloqueado"}</p>
+      </div>
+    `;
+
+  });
+}
+
+
+/* =========================
+   PESTAÑAS
+========================= */
+
+function showTab(tab){
+
+  const tabs=[
+    "play",
+    "upgrades",
+    "maps",
+    "missions",
+    "achievements"
+  ];
+
+  tabs.forEach(t=>{
+    document.getElementById(t).style.display=
+      t===tab?"block":"none";
+  });
+
+  updateUI();
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+let toastTimer=null;
+
+function toast(message){
+
+  const el=document.getElementById("toast");
+
+  el.textContent=message;
+  el.style.display="block";
+
+  clearTimeout(toastTimer);
+
+  toastTimer=setTimeout(()=>{
+    el.style.display="none";
+  },2000);
+}
+
+
+/* =========================
+   REINICIAR
+========================= */
+
+function resetGame(){
+
+  if(!confirm("¿Seguro que quieres borrar todo tu progreso?")){
+    return;
+  }
+
+  localStorage.removeItem("ratClickerSave");
+
+  game={
+    coins:0,
+    gems:0,
+    clicks:0,
+    clickPower:1,
+    auto:0,
+    multiplier:1,
+    gemLuck:0,
+    clickLevel:0,
+    autoLevel:0,
+    multLevel:0,
+    gemLevel:0,
+    map:0,
+    lastSave:Date.now(),
+    bossDefeated:0
+  };
+
+  toast("🔄 Juego reiniciado");
+
+  updateUI();
+  saveGame();
+}
+
+
+/* =========================
+   AUTOMÁTICO
+========================= */
+
+setInterval(()=>{
+
+  if(game.auto>0){
+
+    game.coins+=game.auto;
+
+    updateUI();
+
+  }
+
+},1000);
+
+
+/* =========================
+   JEFE CADA CIERTO TIEMPO
+========================= */
+
+setInterval(()=>{
+
+  if(!bossActive){
+    spawnBoss();
+  }
+
+},60000);
+
+
+/* =========================
+   GUARDADO AUTOMÁTICO
+========================= */
+
+setInterval(()=>{
+  saveGame();
+},5000);
+
+
+/* =========================
+   INICIO
+========================= */
+
+loadGame();
+updateUI();
+
+document.addEventListener("pointerdown",()=>{
+  initAudio();
+},{once:true});
+
+</script></body>
+  </html>
