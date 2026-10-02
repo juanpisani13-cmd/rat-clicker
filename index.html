@@ -2,216 +2,1554 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Rat Clicker</title>
+
 <style>
-  *{box-sizing:border-box}
-  button{
-    -webkit-tap-highlight-color:transparent;
-    -webkit-touch-callout:none;
-    user-select:none;
-    -webkit-user-select:none;
-  }
-  button:focus, button:focus-visible{
-    outline:none;
-  }
-  body{
-    margin:0; min-height:100vh; overflow:hidden;
-    font-family:Arial,sans-serif; color:#fff;
-    background:
-      radial-gradient(circle at 20% 15%,rgba(110,80,45,.25),transparent 28%),
-      radial-gradient(circle at 80% 80%,rgba(70,55,35,.25),transparent 30%),
-      repeating-linear-gradient(0deg,#17120e 0 22px,#1d1712 22px 24px);
-  }
-  .wrap{max-width:700px;margin:auto;padding:24px 16px;text-align:center;position:relative;z-index:2}
-  h1{font-size:42px;margin:10px 0 4px}
-  #rats{font-size:30px;font-weight:bold;margin:8px}
-  .stats{font-size:15px;opacity:.85;margin-bottom:15px}
-  #ratBtn{
-    -webkit-tap-highlight-color:transparent;
-    touch-action:manipulation;
-    width:220px;height:220px;border-radius:50%;border:5px solid #8b6845;
-    background:radial-gradient(circle at 35% 30%,#9d7650,#5b402a 65%,#352519);
-    box-shadow:0 12px 30px #0008,inset 0 0 25px #0008;
-    font-size:85px;cursor:pointer;user-select:none;
-    transition:transform .08s;
-  }
-  #ratBtn:active{transform:scale(.93)}
-  .upgrades{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
-  .upgrades button,.smallBtn{
-    border:0;border-radius:12px;padding:12px;background:#3a2a1c;color:white;
-    cursor:pointer;font-weight:bold;box-shadow:0 4px 10px #0005;
-  }
-  .upgrades button:hover,.smallBtn:hover{background:#513a27}
-  .upgrades button:disabled{opacity:.45;cursor:not-allowed}
-  .cost{display:block;color:#e7c28a;margin-top:5px}
-  #soundBtn{margin-top:14px}
-  #rain{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:5}
-  .falling-rat{
-    position:absolute;top:-80px;font-size:34px;
-    animation:fall linear forwards;
-    filter:drop-shadow(0 3px 3px #0008);
-  }
-  @keyframes fall{
-    0%{transform:translateY(-70px) rotate(0deg) scale(.7);opacity:0}
-    10%{opacity:1}
-    100%{transform:translateY(115vh) rotate(720deg) scale(1);opacity:.95}
-  }
-  @media(max-width:600px){
-    h1{font-size:34px}.upgrades{grid-template-columns:1fr}
-    #ratBtn{width:190px;height:190px}
-  }
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#15121b;
+  color:white;
+  user-select:none;
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:11px 15px;
+  font-weight:bold;
+  color:white;
+  background:#7047c8;
+  cursor:pointer;
+}
+
+button:active{
+  transform:scale(.95);
+}
+
+.app{
+  max-width:900px;
+  margin:auto;
+  padding:12px;
+}
+
+header{
+  background:#241d30;
+  border-radius:18px;
+  padding:15px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+h1{
+  margin:0;
+  font-size:25px;
+}
+
+.stats{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.stat{
+  background:#382c47;
+  padding:8px 11px;
+  border-radius:10px;
+  font-weight:bold;
+}
+
+.tabs{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  margin:12px 0;
+}
+
+.tabs button{
+  white-space:nowrap;
+}
+
+.panel{
+  background:#241d30;
+  border-radius:18px;
+  padding:15px;
+}
+
+.map{
+  min-height:330px;
+  border-radius:17px;
+  padding:20px;
+  text-align:center;
+  overflow:hidden;
+  position:relative;
+}
+
+.home{
+  background:linear-gradient(#987153,#45312b);
+}
+
+.sewer{
+  background:linear-gradient(#315c61,#142b30);
+}
+
+.city{
+  background:linear-gradient(#59657e,#292f40);
+}
+
+.factory{
+  background:linear-gradient(#79633e,#302719);
+}
+
+.palace{
+  background:linear-gradient(#744d8a,#28162f);
+}
+
+.map h2{
+  margin:5px;
+  text-shadow:2px 2px 4px #000;
+}
+
+#rat{
+  font-size:125px;
+  margin:35px auto 10px;
+  display:block;
+  cursor:pointer;
+  filter:drop-shadow(0 10px 8px #0008);
+  transition:.1s;
+}
+
+#rat:hover{
+  transform:scale(1.05);
+}
+
+#rat:active{
+  transform:scale(.85) rotate(-5deg);
+}
+
+.coin{
+  font-size:20px;
+  font-weight:bold;
+}
+
+.mainbtn{
+  margin-top:10px;
+  background:#d38b32;
+  font-size:21px;
+  padding:15px 28px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+
+.card{
+  background:#382c47;
+  padding:14px;
+  border-radius:14px;
+}
+
+.card h3{
+  margin:0 0 7px;
+}
+
+.small{
+  opacity:.7;
+  font-size:13px;
+}
+
+.locked{
+  opacity:.5;
+}
+
+.boss{
+  display:none;
+  margin-top:12px;
+  padding:15px;
+  border-radius:17px;
+  text-align:center;
+  background:linear-gradient(135deg,#8b5908,#dcae2d);
+}
+
+#bossRat{
+  font-size:90px;
+  cursor:pointer;
+}
+
+.bossbar{
+  height:18px;
+  background:#42290d;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:10px;
+}
+
+.bossfill{
+  height:100%;
+  width:100%;
+  background:#ff4444;
+}
+
+#toast{
+  display:none;
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#111e;
+  padding:13px 18px;
+  border-radius:13px;
+  z-index:100;
+  text-align:center;
+}
+
+.reward{
+  color:#ffd85c;
+  font-weight:bold;
+}
 </style>
 </head>
+
 <body>
-<div id="rain"></div>
-<div class="wrap">
-  <h1>🐀 RAT CLICKER</h1>
-  <div id="rats">0 ratas</div>
-  <div class="stats">Por click: <span id="perClick">1</span> · Por segundo: <span id="perSecond">0</span></div>
 
-  <button id="ratBtn" aria-label="Conseguir ratas">🐀</button>
+<div class="app">
 
-  <div class="upgrades">
-    <button id="powerBtn">➕ Más ratas<span class="cost">25 🐀</span></button>
-    <button id="autoBtn">⚙️ Rata automática<span class="cost">100 🐀</span></button>
-    <button id="megaBtn">💥 Mega rata<span class="cost">500 🐀</span></button>
-  </div>
-  <button class="smallBtn" id="soundBtn">🔊 Sonido: ON</button>
-  <br>
-  <button class="smallBtn" id="resetBtn">🔄 Reiniciar</button>
+<header>
+
+<div class="title">
+<h1>🐀 Rat Clicker</h1>
+<button onclick="resetGame()">Reiniciar</button>
 </div>
 
+<div class="stats">
+<div class="stat">🪙 <span id="coins">0</span></div>
+<div class="stat">💎 <span id="gems">0</span></div>
+<div class="stat">⚡ <span id="cps">0</span>/s</div>
+<div class="stat">🗺️ <span id="mapName">Casa</span></div>
+</div>
+
+</header>
+
+<div class="tabs">
+<button onclick="showTab('play')">🐀 Jugar</button>
+<button onclick="showTab('upgrades')">⬆️ Mejoras</button>
+<button onclick="showTab('maps')">🗺️ Mapas</button>
+<button onclick="showTab('missions')">🎯 Misiones</button>
+<button onclick="showTab('achievements')">🏆 Logros</button>
+</div>
+
+
+<!-- JUGAR -->
+
+<section id="play" class="panel">
+
+<div id="mapArea" class="map home">
+
+<div class="small">Mapa actual</div>
+
+<h2 id="mapTitle">🏠 Casa</h2>
+
+<div id="rat" onclick="clickRat()">🐀</div>
+
+<div class="coin">
++<span id="clickValue">1</span> 🪙 por clic
+</div>
+
+<button class="mainbtn" onclick="clickRat()">
+¡CLIC!
+</button>
+
+</div>
+
+
+<!-- JEFE -->
+
+<div id="boss" class="boss">
+
+<h2>👑 ¡RATA DORADA!</h2>
+
+<div id="bossRat" onclick="hitBoss()">🐀</div>
+
+<p>
+Clics:
+<span id="bossHits">0</span>/100
+</p>
+
+<p>
+⏱️ Tiempo:
+<span id="bossTime">10</span>s
+</p>
+
+<div class="bossbar">
+<div id="bossFill" class="bossfill"></div>
+</div>
+
+<p class="reward">
+¡Derrótala para conseguir monedas y diamantes!
+</p>
+
+</div>
+
+</section>
+
+
+<!-- MEJORAS -->
+
+<section id="upgrades" class="panel" style="display:none">
+
+<h2>⬆️ Mejoras</h2>
+
+<div class="grid">
+
+<div class="card">
+
+<h3>🖱️ Patita fuerte</h3>
+
+<p>+1 moneda por clic.</p>
+
+<button onclick="buy('click')">
+Comprar — <span id="clickCost">25</span> 🪙
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>🤖 Rata ayudante</h3>
+
+<p>Genera monedas automáticamente.</p>
+
+<button onclick="buy('auto')">
+Comprar — <span id="autoCost">75</span> 🪙
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>🍕 Comida premium</h3>
+
+<p>Duplica las monedas por clic.</p>
+
+<button onclick="buy('mult')">
+Comprar — <span id="multCost">500</span> 🪙
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>💎 Bolsa brillante</h3>
+
+<p>Aumenta la posibilidad de encontrar diamantes.</p>
+
+<button onclick="buy('gem')">
+Comprar — <span id="gemCost">250</span> 🪙
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- MAPAS -->
+
+<section id="maps" class="panel" style="display:none">
+
+<h2>🗺️ Mapas</h2>
+
+<p class="small">
+Cada mapa aumenta las monedas obtenidas.
+</p>
+
+<div id="mapsGrid" class="grid"></div>
+
+</section>
+
+
+<!-- MISIONES -->
+
+<section id="missions" class="panel" style="display:none">
+
+<h2>🎯 Misiones</h2>
+
+<div id="missionsGrid" class="grid"></div>
+
+</section>
+
+
+<!-- LOGROS -->
+
+<section id="achievements" class="panel" style="display:none">
+
+<h2>🏆 Logros</h2>
+
+<div id="achievementsGrid" class="grid"></div>
+
+</section>
+
+</div>
+
+<div id="toast"></div>
+
+
 <script>
-let rats=0, perClick=1, perSecond=0, clicks=0;
-let powerCost=25, autoCost=100, megaCost=500;
-let soundOn=true;
-let audioCtx=null;
 
-const $=id=>document.getElementById(id);
+/* =========================
+   MAPAS
+========================= */
 
-function initAudio(){
-  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==="suspended") audioCtx.resume();
-}
-function beep(freq=420,duration=.08,type="square",volume=.035){
-  if(!soundOn)return;
-  initAudio();
-  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-  o.type=type;o.frequency.value=freq;g.gain.value=volume;
-  o.connect(g);g.connect(audioCtx.destination);
-  const now=audioCtx.currentTime;
-  g.gain.setValueAtTime(volume,now);
-  g.gain.exponentialRampToValueAtTime(.001,now+duration);
-  o.start(now);o.stop(now+duration);
-}
-function saveGame(){
-  localStorage.setItem("ratClickerSave", JSON.stringify({
-    rats, perClick, perSecond, clicks,
-    powerCost, autoCost, megaCost,
-    savedAt: Date.now()
-  }));
+const maps = [
+
+{
+id:0,
+name:"Casa",
+emoji:"🏠",
+cls:"home",
+cost:0,
+mult:1
+},
+
+{
+id:1,
+name:"Alcantarilla",
+emoji:"🚇",
+cls:"sewer",
+cost:1000,
+mult:1.5
+},
+
+{
+id:2,
+name:"Ciudad",
+emoji:"🏙️",
+cls:"city",
+cost:10000,
+mult:2.2
+},
+
+{
+id:3,
+name:"Fábrica",
+emoji:"🏭",
+cls:"factory",
+cost:100000,
+mult:3.5
+},
+
+{
+id:4,
+name:"Palacio de las ratas",
+emoji:"👑",
+cls:"palace",
+cost:1000000,
+mult:6
 }
 
-function loadGame(){
-  const raw = localStorage.getItem("ratClickerSave");
-  if(!raw) return;
-  try{
-    const s = JSON.parse(raw);
-    rats = Number(s.rats) || 0;
-    perClick = Number(s.perClick) || 1;
-    perSecond = Number(s.perSecond) || 0;
-    clicks = Number(s.clicks) || 0;
-    powerCost = Number(s.powerCost) || 25;
-    autoCost = Number(s.autoCost) || 100;
-    megaCost = Number(s.megaCost) || 500;
+];
 
-    const savedAt = Number(s.savedAt) || Date.now();
-    const elapsed = Math.max(0, (Date.now() - savedAt) / 1000);
-    if(perSecond > 0 && elapsed >= 1){
-      const earned = Math.floor(elapsed * perSecond);
-      rats += earned;
-      if(earned > 0){
-        setTimeout(() => {
-          alert("🐀 ¡Tus ratas trabajaron mientras estabas fuera!\\nGanaste " + earned.toLocaleString("es-AR") + " ratas.");
-        }, 150);
-      }
-    }
-  }catch(e){
-    localStorage.removeItem("ratClickerSave");
-  }
+
+/* =========================
+   MISIONES
+========================= */
+
+const missions = [
+
+{
+id:"clicks",
+name:"Entrenamiento",
+desc:"Haz 100 clics.",
+goal:100,
+reward:250
+},
+
+{
+id:"coins",
+name:"Coleccionista",
+desc:"Consigue 5.000 monedas.",
+goal:5000,
+reward:750
+},
+
+{
+id:"boss",
+name:"Cazajefes",
+desc:"Derrota 1 jefe.",
+goal:1,
+reward:1000
+},
+
+{
+id:"maps",
+name:"Explorador",
+desc:"Desbloquea 3 mapas.",
+goal:3,
+reward:5000
 }
+
+];
+
+
+/* =========================
+   LOGROS
+========================= */
+
+const achievements = [
+
+{
+id:"first",
+name:"Primer clic",
+desc:"Haz tu primer clic.",
+reward:50,
+test:s=>s.totalClicks>=1
+},
+
+{
+id:"hundred",
+name:"Centenario",
+desc:"Haz 1.000 clics.",
+reward:500,
+test:s=>s.totalClicks>=1000
+},
+
+{
+id:"million",
+name:"Millonario",
+desc:"Consigue 1.000.000 monedas.",
+reward:10000,
+test:s=>s.totalCoins>=1000000
+},
+
+{
+id:"boss5",
+name:"Cazador dorado",
+desc:"Derrota 5 jefes.",
+reward:5000,
+test:s=>s.bosses>=5
+},
+
+{
+id:"explorer",
+name:"Gran explorador",
+desc:"Desbloquea todos los mapas.",
+reward:25000,
+test:s=>s.unlocked.length>=maps.length
+}
+
+];
+
+
+/* =========================
+   GUARDADO
+========================= */
+
+let saveData =
+JSON.parse(localStorage.getItem("ratClickerSave") || "null")
+||
+{
+
+coins:0,
+gems:0,
+
+clickPower:1,
+auto:0,
+mult:1,
+gemChance:0,
+
+totalClicks:0,
+totalCoins:0,
+bosses:0,
+
+unlocked:[0],
+map:0,
+
+missions:{},
+achievements:{},
+
+last:Date.now()
+
+};
+
+
+function save(){
+
+saveData.last=Date.now();
+
+localStorage.setItem(
+"ratClickerSave",
+JSON.stringify(saveData)
+);
+
+}
+
+
+/* =========================
+   UTILIDADES
+========================= */
+
+function format(number){
+
+return Math.floor(number)
+.toLocaleString("es-AR");
+
+}
+
+
+function toast(message){
+
+const box=document.getElementById("toast");
+
+box.textContent=message;
+
+box.style.display="block";
+
+clearTimeout(window.toastTimer);
+
+window.toastTimer=setTimeout(()=>{
+
+box.style.display="none";
+
+},2200);
+
+}
+
+
+function currentMultiplier(){
+
+return maps[saveData.map].mult *
+saveData.mult;
+
+}
+
+
+/* =========================
+   CLIC PRINCIPAL
+========================= */
+
+function clickRat(){
+
+let gain=Math.max(
+1,
+Math.floor(
+saveData.clickPower *
+currentMultiplier()
+)
+);
+
+saveData.coins+=gain;
+
+saveData.totalCoins+=gain;
+
+saveData.totalClicks++;
+
+
+/* posibilidad de diamante */
+
+if(
+Math.random()*100 <
+saveData.gemChance
+){
+
+saveData.gems++;
+
+toast("💎 ¡Encontraste un diamante!");
+
+}
+
+
+update();
+
+checkProgress();
+
+save();
+
+}
+
+
+/* =========================
+   COMPRAR MEJORAS
+========================= */
+
+function buy(type){
+
+let cost;
+
+
+if(type==="click"){
+
+cost=Math.floor(
+25 *
+Math.pow(
+1.65,
+saveData.clickPower-1
+)
+);
+
+}
+
+
+if(type==="auto"){
+
+cost=Math.floor(
+75 *
+Math.pow(
+1.8,
+saveData.auto
+)
+);
+
+}
+
+
+if(type==="mult"){
+
+cost=Math.floor(
+500 *
+Math.pow(
+3,
+saveData.mult-1
+)
+);
+
+}
+
+
+if(type==="gem"){
+
+cost=Math.floor(
+250 *
+Math.pow(
+1.7,
+saveData.gemChance
+)
+);
+
+}
+
+
+if(saveData.coins<cost){
+
+toast("❌ No tienes suficientes monedas");
+
+return;
+
+}
+
+
+saveData.coins-=cost;
+
+
+if(type==="click")
+saveData.clickPower++;
+
+
+if(type==="auto")
+saveData.auto++;
+
+
+if(type==="mult")
+saveData.mult*=2;
+
+
+if(type==="gem")
+saveData.gemChance++;
+
+
+toast("✅ ¡Mejora comprada!");
+
+update();
+
+save();
+
+}
+
+
+/* =========================
+   CAMBIAR PESTAÑA
+========================= */
+
+function showTab(tab){
+
+const tabs=[
+"play",
+"upgrades",
+"maps",
+"missions",
+"achievements"
+];
+
+tabs.forEach(id=>{
+
+document.getElementById(id).style.display =
+id===tab ? "block" : "none";
+
+});
+
+
+if(tab==="maps")
+renderMaps();
+
+if(tab==="missions")
+renderMissions();
+
+if(tab==="achievements")
+renderAchievements();
+
+}
+
+
+/* =========================
+   MAPAS
+========================= */
+
+function chooseMap(id){
+
+const map=maps[id];
+
+if(!saveData.unlocked.includes(id)){
+
+if(saveData.coins<map.cost){
+
+toast("❌ Te faltan monedas");
+
+return;
+
+}
+
+saveData.coins-=map.cost;
+
+saveData.unlocked.push(id);
+
+toast("🗺️ ¡Nuevo mapa desbloqueado!");
+
+}
+
+
+saveData.map=id;
+
+renderMap();
+
+update();
+
+save();
+
+}
+
+
+function renderMap(){
+
+const map=maps[saveData.map];
+
+const area=document.getElementById("mapArea");
+
+area.className="map "+map.cls;
+
+document.getElementById("mapTitle").textContent =
+map.emoji+" "+map.name;
+
+document.getElementById("mapName").textContent =
+map.name;
+
+}
+
+
+function renderMaps(){
+
+const grid=document.getElementById("mapsGrid");
+
+grid.innerHTML="";
+
+
+maps.forEach(map=>{
+
+const unlocked=
+saveData.unlocked.includes(map.id);
+
+const card=document.createElement("div");
+
+card.className=
+"card "+(!unlocked ? "locked" : "");
+
+let buttonText;
+
+if(!unlocked){
+
+buttonText=
+"🔒 "+format(map.cost)+" 🪙";
+
+}else{
+
+buttonText=
+saveData.map===map.id
+? "✅ En uso"
+: "Usar";
+
+}
+
+
+card.innerHTML=`
+
+<h3>
+${map.emoji} ${map.name}
+</h3>
+
+<p>
+Multiplicador: x${map.mult}
+</p>
+
+<button>
+${buttonText}
+</button>
+
+`;
+
+const button=card.querySelector("button");
+
+button.onclick=()=>chooseMap(map.id);
+
+grid.appendChild(card);
+
+});
+
+}
+
+
+/* =========================
+   MISIONES
+========================= */
+
+function missionValue(id){
+
+if(id==="clicks")
+return saveData.totalClicks;
+
+if(id==="coins")
+return saveData.totalCoins;
+
+if(id==="boss")
+return saveData.bosses;
+
+if(id==="maps")
+return saveData.unlocked.length;
+
+}
+
+
+function claimMission(id){
+
+const mission=
+missions.find(m=>m.id===id);
+
+if(saveData.missions[id])
+return;
+
+if(
+missionValue(id)<mission.goal
+){
+
+toast("❌ Todavía no completaste la misión");
+
+return;
+
+}
+
+
+saveData.missions[id]=true;
+
+saveData.coins+=mission.reward;
+
+toast(
+"🎯 ¡Misión completada! +"+
+format(mission.reward)+
+" 🪙"
+);
+
+renderMissions();
+
+update();
+
+save();
+
+}
+
+
+function renderMissions(){
+
+const grid=
+document.getElementById("missionsGrid");
+
+grid.innerHTML="";
+
+
+missions.forEach(mission=>{
+
+const value=Math.min(
+missionValue(mission.id),
+mission.goal
+);
+
+const completed=
+!!saveData.missions[mission.id];
+
+const card=
+document.createElement("div");
+
+card.className="card";
+
+card.innerHTML=`
+
+<h3>${mission.name}</h3>
+
+<p>${mission.desc}</p>
+
+<p>
+${format(value)} / ${format(mission.goal)}
+</p>
+
+<button ${completed?"disabled":""}>
+
+${
+completed
+?"✅ Completada"
+:"Reclamar +"+format(mission.reward)+" 🪙"
+}
+
+</button>
+
+`;
+
+card.querySelector("button").onclick=
+()=>claimMission(mission.id);
+
+grid.appendChild(card);
+
+});
+
+}
+
+
+/* =========================
+   LOGROS
+========================= */
+
+function renderAchievements(){
+
+const grid=
+document.getElementById("achievementsGrid");
+
+grid.innerHTML="";
+
+
+achievements.forEach(a=>{
+
+const completed=
+!!saveData.achievements[a.id];
+
+const ready=a.test(saveData);
+
+const card=
+document.createElement("div");
+
+card.className="card";
+
+card.innerHTML=`
+
+<h3>
+${completed?"🏆":"🔒"} ${a.name}
+</h3>
+
+<p>${a.desc}</p>
+
+<button
+${completed||!ready?"disabled":""}
+>
+
+${
+completed
+?"Obtenido"
+:"Reclamar +"+format(a.reward)+" 🪙"
+}
+
+</button>
+
+`;
+
+card.querySelector("button").onclick=()=>{
+
+if(
+completed ||
+!ready
+)
+return;
+
+saveData.achievements[a.id]=true;
+
+saveData.coins+=a.reward;
+
+toast(
+"🏆 ¡Logro desbloqueado!"
+);
+
+renderAchievements();
+
+update();
+
+save();
+
+};
+
+grid.appendChild(card);
+
+});
+
+}
+
+
+/* =========================
+   ACTUALIZAR INTERFAZ
+========================= */
 
 function update(){
-  $("rats").textContent=Math.floor(rats)+" ratas";
-  $("perClick").textContent=perClick;
-  $("perSecond").textContent=perSecond;
-  $("powerBtn").disabled=rats<powerCost;
-  $("autoBtn").disabled=rats<autoCost;
-  $("megaBtn").disabled=rats<megaCost;
-  $("powerBtn").querySelector(".cost").textContent=powerCost+" 🐀";
-  $("autoBtn").querySelector(".cost").textContent=autoCost+" 🐀";
-  $("megaBtn").querySelector(".cost").textContent=megaCost+" 🐀";
-}
-function rainRats(amount=7){
-  for(let i=0;i<amount;i++){
-    const r=document.createElement("div");
-    r.className="falling-rat";
-    r.textContent=["🐀","🐁"][Math.floor(Math.random()*2)];
-    r.style.left=(Math.random()*100)+"vw";
-    r.style.animationDuration=(.8+Math.random()*1.2)+"s";
-    r.style.animationDelay=(Math.random()*.15)+"s";
-    r.style.fontSize=(25+Math.random()*25)+"px";
-    $("rain").appendChild(r);
-    setTimeout(()=>r.remove(),2300);
-  }
-}
-function clickRat(){
-  initAudio();
-  rats+=perClick; clicks++;
-  rainRats(6+Math.min(8,Math.floor(perClick/3)));
-  beep(360+Math.min(400,perClick*25),.07,"square",.045);
-  setTimeout(()=>beep(520,.05,"triangle",.025),35);
-  update();
-  saveGame();
-}
-$("ratBtn").addEventListener("click",clickRat);
 
-$("powerBtn").addEventListener("click",()=>{
-  if(rats>=powerCost){rats-=powerCost;perClick++;powerCost=Math.ceil(powerCost*1.65);beep(700,.12,"triangle");update();saveGame();}
+document.getElementById("coins")
+.textContent=format(saveData.coins);
+
+document.getElementById("gems")
+.textContent=format(saveData.gems);
+
+document.getElementById("cps")
+.textContent=format(
+saveData.auto *
+currentMultiplier()
+);
+
+document.getElementById("clickValue")
+.textContent=format(
+saveData.clickPower *
+currentMultiplier()
+);
+
+
+document.getElementById("clickCost")
+.textContent=format(
+25*
+Math.pow(
+1.65,
+saveData.clickPower-1
+)
+);
+
+
+document.getElementById("autoCost")
+.textContent=format(
+75*
+Math.pow(
+1.8,
+saveData.auto
+)
+);
+
+
+document.getElementById("multCost")
+.textContent=format(
+500*
+Math.pow(
+3,
+saveData.mult-1
+)
+);
+
+
+document.getElementById("gemCost")
+.textContent=format(
+250*
+Math.pow(
+1.7,
+saveData.gemChance
+)
+);
+
+}
+
+
+/* =========================
+   JEFE
+========================= */
+
+let bossActive=false;
+
+let bossHits=0;
+
+let bossEnd=0;
+
+let bossTimer=null;
+
+
+function spawnBoss(){
+
+if(bossActive)
+return;
+
+
+bossActive=true;
+
+bossHits=0;
+
+bossEnd=
+Date.now()+10000;
+
+
+document.getElementById("boss")
+.style.display="block";
+
+
+updateBoss();
+
+
+clearInterval(bossTimer);
+
+bossTimer=
+setInterval(
+updateBoss,
+100
+);
+
+
+toast(
+"👑 ¡APARECIÓ LA RATA DORADA!"
+);
+
+}
+
+
+function updateBoss(){
+
+if(!bossActive)
+return;
+
+
+const remaining=
+Math.max(
+0,
+bossEnd-Date.now()
+);
+
+
+const seconds=
+Math.ceil(
+remaining/1000
+);
+
+
+document.getElementById("bossTime")
+.textContent=seconds;
+
+
+document.getElementById("bossHits")
+.textContent=bossHits;
+
+
+document.getElementById("bossFill")
+.style.width=
+bossHits+"%";
+
+
+if(remaining<=0){
+
+bossActive=false;
+
+document.getElementById("boss")
+.style.display="none";
+
+clearInterval(bossTimer);
+
+toast(
+"💨 ¡La rata dorada escapó!"
+);
+
+}
+
+}
+
+
+function hitBoss(){
+
+if(!bossActive)
+return;
+
+
+bossHits++;
+
+
+updateBoss();
+
+
+if(bossHits>=100){
+
+bossActive=false;
+
+clearInterval(bossTimer);
+
+
+document.getElementById("boss")
+.style.display="none";
+
+
+const reward=
+Math.floor(
+1000 *
+currentMultiplier()
+);
+
+
+saveData.coins+=reward;
+
+saveData.totalCoins+=reward;
+
+saveData.bosses++;
+
+saveData.gems+=3;
+
+
+toast(
+"👑 ¡JEFE DERROTADO! +"+
+format(reward)+
+" 🪙 +3 💎"
+);
+
+
+checkProgress();
+
+update();
+
+save();
+
+}
+
+}
+
+
+/* =========================
+   MISIONES / LOGROS
+========================= */
+
+function checkProgress(){
+
+missions.forEach(m=>{
+
+if(
+!saveData.missions[m.id] &&
+missionValue(m.id)>=m.goal
+){
+
+toast(
+"🎯 ¡Misión lista para reclamar!"
+);
+
+}
+
 });
-$("autoBtn").addEventListener("click",()=>{
-  if(rats>=autoCost){rats-=autoCost;perSecond++;autoCost=Math.ceil(autoCost*1.8);beep(760,.12,"triangle");update();saveGame();}
+
+
+achievements.forEach(a=>{
+
+if(
+!saveData.achievements[a.id] &&
+a.test(saveData)
+){
+
+toast(
+"🏆 ¡Nuevo logro desbloqueable!"
+);
+
+}
+
 });
-$("megaBtn").addEventListener("click",()=>{
-  if(rats>=megaCost){rats-=megaCost;perClick+=10;megaCost=Math.ceil(megaCost*2.2);rainRats(18);beep(180,.16,"sawtooth",.05);update();saveGame();}
-});
-$("soundBtn").addEventListener("click",()=>{
-  soundOn=!soundOn;
-  $("soundBtn").textContent=soundOn?"🔊 Sonido: ON":"🔇 Sonido: OFF";
-  if(soundOn) beep(600,.1,"triangle");
-});
-$("resetBtn").addEventListener("click",()=>{
-  if(confirm("¿Reiniciar todo?")){
-    rats=0;perClick=1;perSecond=0;clicks=0;powerCost=25;autoCost=100;megaCost=500;
-    beep(220,.15,"sawtooth");update();saveGame();
-  }
-});
+
+}
+
+
+/* =========================
+   GANANCIAS OFFLINE
+========================= */
+
+function offlineEarnings(){
+
+const elapsed=
+Math.min(
+8*60*60,
+(Date.now()-
+(saveData.last||Date.now()))
+/1000
+);
+
+
+if(
+elapsed>=5 &&
+saveData.auto>0
+){
+
+const gain=Math.floor(
+elapsed *
+saveData.auto *
+currentMultiplier()
+);
+
+
+saveData.coins+=gain;
+
+saveData.totalCoins+=gain;
+
+
+setTimeout(()=>{
+
+toast(
+"💤 Mientras estabas fuera ganaste "+
+format(gain)+
+" 🪙"
+);
+
+},500);
+
+}
+
+}
+
+
+/* =========================
+   REINICIAR
+========================= */
+
+function resetGame(){
+
+if(
+confirm(
+"¿Seguro que quieres borrar TODO tu progreso?"
+)
+){
+
+localStorage.removeItem(
+"ratClickerSave"
+);
+
+location.reload();
+
+}
+
+}
+
+
+/* =========================
+   AUTOGUARDADO
+========================= */
+
 setInterval(()=>{
-  if(perSecond>0){
-    rats+=perSecond;
-    update();
-  }
-  saveGame();
+
+if(saveData.auto>0){
+
+const gain=Math.floor(
+saveData.auto *
+currentMultiplier()
+);
+
+saveData.coins+=gain;
+
+saveData.totalCoins+=gain;
+
+update();
+
+}
+
 },1000);
 
-window.addEventListener("beforeunload", saveGame);
-document.addEventListener("visibilitychange", ()=>{
-  if(document.visibilityState === "hidden") saveGame();
+
+setInterval(()=>{
+
+save();
+
+},5000);
+
+
+/* =========================
+   APARICIÓN DE JEFES
+========================= */
+
+let nextBoss=
+Date.now()+30000;
+
+
+setInterval(()=>{
+
+if(
+Date.now()>=nextBoss &&
+!bossActive
+){
+
+spawnBoss();
+
+
+nextBoss=
+Date.now()+
+60000+
+Math.random()*60000;
+
+}
+
+},500);
+
+
+/* =========================
+   GUARDAR AL SALIR
+========================= */
+
+document.addEventListener(
+"visibilitychange",
+()=>{
+
+if(document.hidden)
+save();
+
 });
 
-loadGame();
+
+window.addEventListener(
+"beforeunload",
+save
+);
+
+
+/* =========================
+   INICIO
+========================= */
+
+offlineEarnings();
+
+renderMap();
+
 update();
+
+save();
+
 </script>
+
 </body>
-</html>
+ </html>
